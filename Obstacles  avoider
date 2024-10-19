@@ -1,0 +1,104 @@
+#include <Servo.h>
+Servo myserv;
+
+long duration;
+int distance;
+
+void setup() {
+  pinMode(8, OUTPUT); // first motor pin
+  pinMode(9, OUTPUT); // first motor second pin
+  pinMode(10, OUTPUT); // second motor first pin
+  pinMode(11, OUTPUT);  // second motor second pin
+  pinMode(7, OUTPUT); // ultrasonic sensor trig pin
+  pinMode(6, INPUT); // echo pin
+  myservo.attach(5); // servo motor pin
+  myservo.write(90);// to initalize the position of the servo motor
+}
+
+void loop() {
+
+  digitalWrite(7, LOW); // code for calculating distance using ultrasonic sensor
+  delayMicroseconds(2);  
+  digitalWrite(7, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(7, LOW);
+
+  duration = pulseIn(6, HIGH);
+
+  distance = duration * 0.034 / 2;
+  Serial.println(distance);
+
+  if (distance > 20)
+  {
+    digitalWrite(8, LOW);
+    digitalWrite(9, HIGH);
+    digitalWrite(10, HIGH);
+    digitalWrite(11, LOW);
+  }
+  else if ( distance < 20)  // checking any object
+  {
+    digitalWrite(8, LOW);
+    digitalWrite(9, LOW);
+    digitalWrite(10, LOW);
+    digitalWrite(11, LOW);
+    delay(500);
+    myservo.write(0);
+    delay(1000);
+    digitalWrite(7, LOW);
+    delayMicroseconds(2);
+    digitalWrite(7, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(7, LOW);
+
+    duration = pulseIn(6, HIGH);
+
+    distance = duration * 0.034 / 2;
+    Serial.println(distance);
+    myservo.write(90);
+     if (distance > 20)
+    {
+      //left
+      digitalWrite(8, HIGH);
+      digitalWrite(9, LOW);
+      digitalWrite(10, HIGH);
+      digitalWrite(11, LOW);
+      delay(500);
+
+      digitalWrite(8, LOW);
+      digitalWrite(9, HIGH);
+      digitalWrite(10, HIGH);
+      digitalWrite(11, LOW);
+
+    }
+    else if (distance < 2)
+    {
+      myservo.write(180);
+      delay(1000);
+      digitalWrite(7, LOW);
+      delayMicroseconds(2);
+      digitalWrite(7, HIGH);
+      delayMicroseconds(10);
+      digitalWrite(7, LOW);
+
+      duration = pulseIn(6, HIGH);
+
+      distance = duration * 0.034 /2;
+      Serial.println(distance);
+      myservo.write(90);
+      if (distance > 20)
+      {
+        //right
+        digitalWrite(8, LOW);
+        digitalWrite(9, HIGH);
+        digitalWrite(10, LOW);
+        digitalWrite(11, HIGH);
+        delay(500);
+        digitalWrite(8, LOW);
+        digitalWrite(9, HIGH);
+        digitalWrite(10, HIGH);
+        digitalWrite(11, LOW);
+      }
+    }
+
+  }
+}
